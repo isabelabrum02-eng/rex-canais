@@ -1,0 +1,1268 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rex Canais - Gestão de Clientes</title>
+    <style>
+        :root {
+            --bg: #090909;
+            --card: #141414;
+            --primary: #d4af37;
+            --primary-dark: #b48a1e;
+            --accent: #f7d774;
+            --accent-strong: #d4af37;
+            --warning: #f5c35a;
+            --danger: #ff5f5f;
+            --text: #f5f1e6;
+            --muted: #c9b57a;
+            --line: rgba(212, 175, 55, 0.28);
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top, #1b1b1b 0%, #090909 55%);
+            color: var(--text);
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 18px 20px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.96), rgba(31, 24, 10, 0.82));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 55%, var(--primary-dark) 100%);
+            color: #140f00;
+            font-weight: 800;
+            font-size: 1.4rem;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 0.74rem;
+            font-weight: bold;
+        }
+
+        h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: clamp(2rem, 3vw, 3rem);
+            letter-spacing: 0.03em;
+            text-shadow: 0 0 18px rgba(212, 175, 55, 0.18);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-actions .secondary-btn,
+        .header-actions .ghost-btn {
+            min-width: 150px;
+        }
+
+        .storage-notice {
+            margin: -4px 0 20px;
+            padding: 12px 16px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: rgba(212, 175, 55, 0.08);
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+        .storage-notice.error {
+            border-color: rgba(255, 95, 95, 0.5);
+            background: rgba(255, 95, 95, 0.08);
+            color: #ffb3b3;
+        }
+
+        .auth-card {
+            max-width: 480px;
+            margin: 8vh auto;
+            padding: 28px;
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(10, 10, 10, 0.98));
+            box-shadow: var(--shadow);
+        }
+
+        .auth-card h2 {
+            margin: 0 0 10px;
+            color: var(--primary);
+        }
+
+        .auth-copy {
+            margin: 0 0 20px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .auth-form label {
+            display: grid;
+            gap: 7px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #111;
+            color: var(--text);
+        }
+
+        .auth-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .account-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .account-email {
+            color: var(--muted);
+            font-size: 0.88rem;
+            overflow-wrap: anywhere;
+        }
+
+        .button,
+        .secondary-btn,
+        .ghost-btn,
+        .action-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .button:hover,
+        .secondary-btn:hover,
+        .ghost-btn:hover,
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .button {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 55%, var(--primary-dark) 100%);
+            color: #1a1200;
+            box-shadow: 0 10px 24px rgba(212, 175, 55, 0.28);
+            border: 1px solid rgba(255, 223, 123, 0.45);
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+            color: #1a1200;
+            border: 1px solid rgba(255, 223, 123, 0.5);
+        }
+
+        .ghost-btn {
+            background: rgba(212, 175, 55, 0.12);
+            color: var(--primary);
+            border: 1px solid var(--line);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .status-band {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .status-pill {
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(20, 20, 20, 0.8);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .status-pill strong {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 20, 0.92);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin: 0 0 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .stat-value {
+            margin: 0;
+            font-size: clamp(1.3rem, 2vw, 2.1rem);
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0.96), rgba(10, 10, 10, 0.96));
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto auto 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.9), transparent);
+        }
+
+        .card h2 {
+            margin: 0 0 18px;
+            color: var(--primary);
+            font-size: 1.45rem;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .toolbar input,
+        .toolbar select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: #111111;
+            color: var(--text);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .toolbar input:focus,
+        .toolbar select:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.9);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .form-actions .button,
+        .form-actions .ghost-btn {
+            width: 100%;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .toolbar > * {
+            flex: 1 1 180px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: middle;
+        }
+
+        th {
+            color: var(--primary);
+            background: #0f0f0f;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tbody tr:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        td {
+            color: var(--text);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .tag.warning {
+            background: rgba(245, 195, 90, 0.15);
+            color: #ffd77a;
+        }
+
+        .cell-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+            border-radius: 10px;
+        }
+
+        .action-btn.whatsapp {
+            background: rgba(212, 175, 55, 0.15);
+            color: #f7d774;
+        }
+
+        .action-btn.edit {
+            background: rgba(255, 255, 255, 0.06);
+            color: #f0d98b;
+        }
+
+        .action-btn.delete {
+            background: rgba(255, 95, 95, 0.12);
+            color: #ffb3b3;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            padding: 28px 12px;
+            font-size: 0.96rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats,
+            .status-band {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .auth-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="auth-card" id="authPanel">
+            <p class="eyebrow">Acesso seguro</p>
+            <h2>Entre na sua conta Rex Canais</h2>
+            <p class="auth-copy">Seus clientes serão armazenados no banco online e vinculados à sua conta.</p>
+            <form class="auth-form" id="authForm">
+                <label for="authEmail">E-mail
+                    <input type="email" id="authEmail" autocomplete="email" required>
+                </label>
+                <label for="authPassword">Senha
+                    <input type="password" id="authPassword" autocomplete="current-password" minlength="8" required>
+                </label>
+                <div class="auth-actions">
+                    <button type="submit" class="button" id="signInButton">Entrar</button>
+                    <button type="button" class="ghost-btn" id="signUpButton">Criar conta</button>
+                </div>
+                <button type="button" class="ghost-btn" id="resendConfirmationButton">Reenviar confirmação de e-mail</button>
+            </form>
+            <p class="storage-notice" id="authStatus" role="status" aria-live="polite">Entre com sua conta ou crie uma nova. Use uma senha com pelo menos 8 caracteres.</p>
+        </section>
+
+        <div id="appPanel" class="hidden">
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark">R</div>
+                <div>
+                    <p class="eyebrow">Gestão de clientes IPTV</p>
+                    <h1>Rex Canais</h1>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="account-actions">
+                    <span class="account-email" id="accountEmail"></span>
+                    <button type="button" id="signOutButton" class="ghost-btn">Sair</button>
+                </div>
+                <button type="button" id="btnExportCsv" class="ghost-btn">Exportar CSV</button>
+                <button type="button" id="btnBackup" class="ghost-btn">Backup local</button>
+                <button type="button" id="btnImportBackup" class="ghost-btn">Restaurar backup</button>
+                <input type="file" id="backupFile" accept="application/json,.json" class="hidden">
+                <button type="button" id="btnImportLocal" class="ghost-btn">Importar deste navegador</button>
+                <button type="button" id="btnResetDemo" class="secondary-btn">Adicionar exemplos</button>
+            </div>
+        </header>
+
+        <p class="storage-notice" id="storageStatus" role="status" aria-live="polite">
+            Seus clientes serão salvos na sua conta. Faça backups regularmente para manter uma cópia local.
+        </p>
+
+        <section class="status-band" aria-label="Indicadores rápidos">
+            <div class="status-pill">
+                <span>Hoje</span>
+                <strong id="statusHoje">0</strong>
+            </div>
+            <div class="status-pill">
+                <span>Próximos</span>
+                <strong id="statusProximos">0</strong>
+            </div>
+            <div class="status-pill">
+                <span>Mensalidade alta</span>
+                <strong id="statusAlto">0</strong>
+            </div>
+        </section>
+
+        <section class="stats" aria-label="Resumo do sistema">
+            <div class="stat-card">
+                <p class="stat-label">Clientes</p>
+                <p class="stat-value" id="totalClientes">0</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Receita mensal</p>
+                <p class="stat-value" id="receitaTotal">R$ 0,00</p>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Próximo vencimento</p>
+                <p class="stat-value" id="proximoVencimento">-</p>
+            </div>
+        </section>
+
+        <section class="dashboard">
+            <aside class="card">
+                <h2 id="formTitle">Novo cliente</h2>
+                <form id="clientForm">
+                    <input type="hidden" id="clienteId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nome">Nome</label>
+                            <input type="text" id="nome" placeholder="Ex: João da Silva" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone">Telefone</label>
+                            <input type="text" id="telefone" placeholder="Ex: 5511999999999" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="valor">Valor (R$)</label>
+                            <input type="number" id="valor" step="0.01" min="0" placeholder="99.90" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vencimento">Vencimento</label>
+                            <select id="vencimento" required>
+                                <option value="07">Dia 07</option>
+                                <option value="09">Dia 09</option>
+                                <option value="15">Dia 15</option>
+                                <option value="20">Dia 20</option>
+                                <option value="26">Dia 26</option>
+                                <option value="29">Dia 29</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="app">App na TV</label>
+                            <input type="text" id="app" placeholder="Ex: IBO Player, Duplex..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qtdTv">Quantidade de TVs</label>
+                            <input type="number" id="qtdTv" min="1" value="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="margin-top: 22px;">
+                        <button type="submit" class="button" id="submitButton">Cadastrar cliente</button>
+                        <button type="button" class="ghost-btn hidden" id="cancelEdit">Cancelar</button>
+                    </div>
+                </form>
+            </aside>
+
+            <main class="card">
+                <h2>Clientes cadastrados</h2>
+
+                <div class="toolbar">
+                    <input id="pesquisa" type="search" placeholder="Buscar por nome ou telefone">
+                    <select id="filtroVencimento">
+                        <option value="todos">Todos os vencimentos</option>
+                        <option value="07">Dia 07</option>
+                        <option value="09">Dia 09</option>
+                        <option value="15">Dia 15</option>
+                        <option value="20">Dia 20</option>
+                        <option value="26">Dia 26</option>
+                        <option value="29">Dia 29</option>
+                    </select>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Valor</th>
+                                <th>Venc.</th>
+                                <th>App / TVs</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientTableBody"></tbody>
+                    </table>
+                </div>
+            </main>
+        </section>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const STORAGE_KEY = 'rex_clientes';
+        const SUPABASE_URL = 'https://cdddqwiwufogxxlcbldt.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_0odEPUnQoXgBGuno7Cs5Fg_V4x_a_b3';
+        const SITE_URL = 'https://inquisitive-halva-36b625.netlify.app';
+        const supabaseClient = window.supabase?.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const authPanel = document.getElementById('authPanel');
+        const appPanel = document.getElementById('appPanel');
+        const authForm = document.getElementById('authForm');
+        const authEmailInput = document.getElementById('authEmail');
+        const authPasswordInput = document.getElementById('authPassword');
+        const authStatusEl = document.getElementById('authStatus');
+        const accountEmailEl = document.getElementById('accountEmail');
+        const form = document.getElementById('clientForm');
+        const tableBody = document.getElementById('clientTableBody');
+        const pesquisaInput = document.getElementById('pesquisa');
+        const filtroVencimento = document.getElementById('filtroVencimento');
+        const totalClientesEl = document.getElementById('totalClientes');
+        const receitaTotalEl = document.getElementById('receitaTotal');
+        const proximoVencimentoEl = document.getElementById('proximoVencimento');
+        const statusHojeEl = document.getElementById('statusHoje');
+        const statusProximosEl = document.getElementById('statusProximos');
+        const statusAltoEl = document.getElementById('statusAlto');
+        const storageStatusEl = document.getElementById('storageStatus');
+        const formTitle = document.getElementById('formTitle');
+        const submitButton = document.getElementById('submitButton');
+        const cancelEditButton = document.getElementById('cancelEdit');
+        const clienteIdInput = document.getElementById('clienteId');
+        let currentUser = null;
+        let clientesCache = [];
+        let renderVersion = 0;
+
+        const padraoClientes = [
+            { id: crypto.randomUUID(), nome: 'Maria Souza', telefone: '5511987654321', valor: '79.90', vencimento: '07', app: 'IBO Player', qtdTv: 1 },
+            { id: crypto.randomUUID(), nome: 'Carlos Lima', telefone: '5511912345678', valor: '119.00', vencimento: '15', app: 'Duplex', qtdTv: 2 },
+            { id: crypto.randomUUID(), nome: 'Aline Costa', telefone: '5511976543210', valor: '89.90', vencimento: '26', app: 'Smart IPTV', qtdTv: 1 }
+        ];
+
+        function mostrarMensagem(elemento, mensagem, erro = false) {
+            elemento.textContent = mensagem;
+            elemento.classList.toggle('error', erro);
+        }
+
+        function mensagemErro(error) {
+            return error?.message || 'Ocorreu um erro inesperado.';
+        }
+
+        function normalizarCliente(cliente) {
+            return {
+                id: cliente.id || crypto.randomUUID(),
+                nome: cliente.nome || '',
+                telefone: cliente.telefone || '',
+                valor: Number(cliente.valor || 0).toFixed(2),
+                vencimento: String(cliente.vencimento || '07').padStart(2, '0'),
+                app: cliente.app || '',
+                qtdTv: Number(cliente.qtd_tv ?? cliente.qtdTv ?? 1)
+            };
+        }
+
+        function clienteParaBanco(cliente) {
+            return {
+                id: cliente.id,
+                user_id: currentUser.id,
+                nome: cliente.nome,
+                telefone: cliente.telefone,
+                valor: Number(cliente.valor),
+                vencimento: cliente.vencimento,
+                app: cliente.app,
+                qtd_tv: cliente.qtdTv
+            };
+        }
+
+        async function obterClientes() {
+            const { data, error } = await supabaseClient
+                .from('clientes')
+                .select('id, nome, telefone, valor, vencimento, app, qtd_tv')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: true });
+            if (error) throw error;
+            return data.map(normalizarCliente);
+        }
+
+        async function gravarCliente(cliente) {
+            const dados = clienteParaBanco(cliente);
+            const resultado = clienteIdInput.value
+                ? await supabaseClient.from('clientes').update(dados).eq('id', cliente.id).eq('user_id', currentUser.id).select('id').single()
+                : await supabaseClient.from('clientes').insert(dados).select('id').single();
+            if (resultado.error) throw resultado.error;
+        }
+
+        async function excluirCliente(clienteId) {
+            const { error } = await supabaseClient
+                .from('clientes')
+                .delete()
+                .eq('id', clienteId)
+                .eq('user_id', currentUser.id)
+                .select('id')
+                .single();
+            if (error) throw error;
+        }
+
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(Number(valor || 0));
+        }
+
+        function formatarTelefone(telefone) {
+            const clean = String(telefone || '').replace(/\D/g, '');
+            if (clean.length === 13) {
+                return `+${clean.slice(0, 2)} (${clean.slice(2, 4)}) ${clean.slice(4, 9)}-${clean.slice(9)}`;
+            }
+            return clean ? clean : 'Sem telefone';
+        }
+
+        function buildWhatsAppLink(cliente) {
+            const mensagem = encodeURIComponent(
+                `Olá ${cliente.nome}, aqui é da Rex Canais. Passando para lembrar que a sua mensalidade no valor de ${formatarMoeda(cliente.valor)} vence no dia ${cliente.vencimento}. Obrigado!`
+            );
+            return `https://wa.me/${String(cliente.telefone || '').replace(/\D/g, '')}?text=${mensagem}`;
+        }
+
+        function atualizarEstatisticas(clientes) {
+            const total = clientes.length;
+            const receita = clientes.reduce((soma, cliente) => soma + Number(cliente.valor || 0), 0);
+            const proximos = [...clientes].sort((a, b) => Number(a.vencimento) - Number(b.vencimento));
+            const hoje = clientes.filter((cliente) => cliente.vencimento === '07').length;
+            const proximosHoje = clientes.filter((cliente) => Number(cliente.vencimento) <= 15).length;
+            const alto = clientes.filter((cliente) => Number(cliente.valor) >= 100).length;
+
+            totalClientesEl.textContent = String(total);
+            receitaTotalEl.textContent = formatarMoeda(receita);
+            proximoVencimentoEl.textContent = proximos.length ? `Dia ${proximos[0].vencimento}` : '-';
+            statusHojeEl.textContent = String(hoje);
+            statusProximosEl.textContent = String(proximosHoje);
+            statusAltoEl.textContent = String(alto);
+        }
+
+        function resetForm() {
+            form.reset();
+            document.getElementById('qtdTv').value = 1;
+            document.getElementById('vencimento').value = '07';
+            clienteIdInput.value = '';
+            formTitle.textContent = 'Novo cliente';
+            submitButton.textContent = 'Cadastrar cliente';
+            cancelEditButton.classList.add('hidden');
+        }
+
+        async function renderClientes() {
+            if (!currentUser) return;
+            const chamada = ++renderVersion;
+            mostrarMensagem(storageStatusEl, 'Carregando clientes da sua conta...');
+
+            let clientes;
+            try {
+                clientes = await obterClientes();
+            } catch (error) {
+                if (chamada !== renderVersion) return;
+                clientesCache = [];
+                atualizarEstatisticas([]);
+                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">Não foi possível carregar os clientes. Verifique o aviso acima.</td></tr>';
+                mostrarMensagem(storageStatusEl, `Falha ao carregar clientes: ${mensagemErro(error)}`, true);
+                console.error('Falha ao carregar os clientes do Supabase.', error);
+                return;
+            }
+            if (chamada !== renderVersion) return;
+            clientesCache = clientes;
+            mostrarMensagem(storageStatusEl, 'Conectado. Seus cadastros estão salvos na sua conta Supabase.');
+            document.getElementById('btnResetDemo').disabled = clientes.length > 0;
+            renderTabelaClientes();
+        }
+
+        function renderTabelaClientes() {
+            const clientes = clientesCache;
+            const termo = pesquisaInput.value.trim().toLowerCase();
+            const filtro = filtroVencimento.value;
+
+            const filtrados = clientes.filter((cliente) => {
+                const matchBusca = !termo ||
+                    cliente.nome.toLowerCase().includes(termo) ||
+                    String(cliente.telefone).toLowerCase().includes(termo);
+                const matchVencimento = filtro === 'todos' || cliente.vencimento === filtro;
+                return matchBusca && matchVencimento;
+            });
+
+            atualizarEstatisticas(clientes);
+            tableBody.innerHTML = '';
+
+            if (!filtrados.length) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="empty-state">Nenhum cliente encontrado.</td></tr>';
+                return;
+            }
+
+            filtrados.forEach((cliente) => {
+                const linha = document.createElement('tr');
+                const valorTag = Number(cliente.valor) > 100 ? 'tag' : 'tag warning';
+                const nome = document.createElement('td');
+                nome.textContent = cliente.nome;
+                const telefone = document.createElement('td');
+                telefone.textContent = formatarTelefone(cliente.telefone);
+                const valor = document.createElement('td');
+                const valorBadge = document.createElement('span');
+                valorBadge.className = valorTag;
+                valorBadge.textContent = formatarMoeda(cliente.valor);
+                valor.appendChild(valorBadge);
+                const vencimento = document.createElement('td');
+                vencimento.textContent = `Dia ${cliente.vencimento}`;
+                const app = document.createElement('td');
+                app.textContent = `${cliente.app} (${cliente.qtdTv} ${cliente.qtdTv > 1 ? 'TVs' : 'TV'})`;
+
+                const acoes = document.createElement('td');
+                const grupoAcoes = document.createElement('div');
+                grupoAcoes.className = 'cell-actions';
+                const cobrar = document.createElement('a');
+                cobrar.className = 'action-btn whatsapp';
+                cobrar.href = buildWhatsAppLink(cliente);
+                cobrar.target = '_blank';
+                cobrar.rel = 'noopener noreferrer';
+                cobrar.textContent = 'Cobrar';
+                const editar = document.createElement('button');
+                editar.type = 'button';
+                editar.className = 'action-btn edit';
+                editar.dataset.action = 'edit';
+                editar.dataset.id = cliente.id;
+                editar.textContent = 'Editar';
+                const excluir = document.createElement('button');
+                excluir.type = 'button';
+                excluir.className = 'action-btn delete';
+                excluir.dataset.action = 'delete';
+                excluir.dataset.id = cliente.id;
+                excluir.textContent = 'Excluir';
+
+                grupoAcoes.append(cobrar, editar, excluir);
+                acoes.appendChild(grupoAcoes);
+                linha.append(nome, telefone, valor, vencimento, app, acoes);
+                tableBody.appendChild(linha);
+            });
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!currentUser) return;
+
+            const cliente = {
+                id: clienteIdInput.value || crypto.randomUUID(),
+                nome: document.getElementById('nome').value.trim(),
+                telefone: document.getElementById('telefone').value.trim(),
+                valor: Number(document.getElementById('valor').value || 0).toFixed(2),
+                vencimento: document.getElementById('vencimento').value,
+                app: document.getElementById('app').value.trim(),
+                qtdTv: Number(document.getElementById('qtdTv').value || 1)
+            };
+
+            if (!cliente.nome || !cliente.telefone || !cliente.app) {
+                return;
+            }
+
+            submitButton.disabled = true;
+            try {
+                await gravarCliente(cliente);
+                resetForm();
+                mostrarMensagem(storageStatusEl, 'Cliente salvo na sua conta.');
+                await renderClientes();
+            } catch (error) {
+                mostrarMensagem(storageStatusEl, `Não foi possível salvar o cliente: ${mensagemErro(error)}`, true);
+                console.error('Falha ao gravar cliente no Supabase.', error);
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+
+        tableBody.addEventListener('click', async (event) => {
+            const botao = event.target.closest('[data-action]');
+            if (!botao) return;
+
+            const clienteId = botao.dataset.id;
+            const action = botao.dataset.action;
+
+            if (action === 'delete') {
+                if (!window.confirm('Tem certeza de que deseja excluir este cliente?')) return;
+                botao.disabled = true;
+                try {
+                    await excluirCliente(clienteId);
+                    mostrarMensagem(storageStatusEl, 'Cliente excluído.');
+                    await renderClientes();
+                } catch (error) {
+                    mostrarMensagem(storageStatusEl, `Não foi possível excluir o cliente: ${mensagemErro(error)}`, true);
+                    console.error('Falha ao excluir cliente do Supabase.', error);
+                    botao.disabled = false;
+                }
+                return;
+            }
+
+            if (action === 'edit') {
+                const cliente = clientesCache.find((item) => item.id === clienteId);
+                if (!cliente) return;
+
+                clienteIdInput.value = cliente.id;
+                document.getElementById('nome').value = cliente.nome;
+                document.getElementById('telefone').value = cliente.telefone;
+                document.getElementById('valor').value = cliente.valor;
+                document.getElementById('vencimento').value = cliente.vencimento;
+                document.getElementById('app').value = cliente.app;
+                document.getElementById('qtdTv').value = cliente.qtdTv;
+                formTitle.textContent = 'Editar cliente';
+                submitButton.textContent = 'Salvar alterações';
+                cancelEditButton.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        cancelEditButton.addEventListener('click', resetForm);
+        pesquisaInput.addEventListener('input', renderTabelaClientes);
+        filtroVencimento.addEventListener('change', renderTabelaClientes);
+
+        function exportarCsv() {
+            const clientes = clientesCache;
+            if (!clientes.length) {
+                mostrarMensagem(storageStatusEl, 'Não há clientes para exportar.', true);
+                return;
+            }
+
+            const cabecalho = ['nome', 'telefone', 'valor', 'vencimento', 'app', 'qtdTv'];
+            const linhas = clientes.map((cliente) => [
+                cliente.nome,
+                cliente.telefone,
+                cliente.valor,
+                cliente.vencimento,
+                cliente.app,
+                cliente.qtdTv
+            ]);
+
+            const csv = [cabecalho, ...linhas]
+                .map((linha) => linha.map((valor) => `"${String(valor).replace(/"/g, '""')}"`).join(','))
+                .join('\n');
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'rex-clientes.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function baixarArquivo(nome, conteudo, tipo) {
+            const blob = new Blob([conteudo], { type: tipo });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = nome;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function exportarBackup() {
+            if (!clientesCache.length) {
+                mostrarMensagem(storageStatusEl, 'Não há clientes para salvar no backup.', true);
+                return;
+            }
+
+            const backup = {
+                versao: 1,
+                exportadoEm: new Date().toISOString(),
+                clientes: clientesCache
+            };
+            baixarArquivo(
+                'rex-backup-clientes.json',
+                JSON.stringify(backup, null, 2),
+                'application/json;charset=utf-8'
+            );
+            storageStatusEl.textContent = 'Backup JSON baixado para seu dispositivo. Guarde-o em um local seguro.';
+            storageStatusEl.classList.remove('error');
+        }
+
+        async function importarBackup(arquivo) {
+            try {
+                const backup = JSON.parse(await arquivo.text());
+                const clientesBackup = Array.isArray(backup) ? backup : backup.clientes;
+                if (!Array.isArray(clientesBackup) || !clientesBackup.every((cliente) =>
+                    cliente && typeof cliente === 'object' && !Array.isArray(cliente)
+                )) {
+                    throw new Error('O arquivo não contém uma lista de clientes válida.');
+                }
+
+                const clientes = clientesBackup.map((cliente) => ({
+                    ...normalizarCliente(cliente),
+                    id: crypto.randomUUID()
+                }));
+                if (clientes.some((cliente) => !cliente.nome || !cliente.telefone || !cliente.app)) {
+                    throw new Error('Um ou mais clientes do backup estão sem nome, telefone ou app.');
+                }
+                if (!clientes.length) {
+                    mostrarMensagem(storageStatusEl, 'O backup não contém clientes para importar.', true);
+                    return;
+                }
+
+                if (!window.confirm(`Serão adicionados ${clientes.length} cliente(s) à sua conta atual. Nenhum cadastro existente será removido. Continuar?`)) {
+                    return;
+                }
+
+                const dados = clientes.map(clienteParaBanco);
+                const { error } = await supabaseClient.from('clientes').insert(dados);
+                if (error) throw error;
+                resetForm();
+                await renderClientes();
+                mostrarMensagem(storageStatusEl, `Backup importado: ${clientes.length} cliente(s) adicionados à sua conta.`);
+            } catch (error) {
+                mostrarMensagem(storageStatusEl, `Não foi possível importar o backup: ${mensagemErro(error)}`, true);
+                console.error('Falha ao importar o backup local.', error);
+            }
+        }
+
+        async function importarDadosLocais() {
+            try {
+                const dadosSalvos = localStorage.getItem(STORAGE_KEY);
+                if (dadosSalvos === null) {
+                    mostrarMensagem(storageStatusEl, 'Não há cadastros locais para importar.', true);
+                    return;
+                }
+
+                const clientesLocais = JSON.parse(dadosSalvos);
+                if (!Array.isArray(clientesLocais)) {
+                    throw new Error('Os dados locais não estão em um formato válido.');
+                }
+                if (!clientesLocais.length) {
+                    mostrarMensagem(storageStatusEl, 'A lista local está vazia; não há clientes para importar.');
+                    return;
+                }
+
+                if (!window.confirm(`Serão copiados ${clientesLocais.length} cliente(s) deste navegador para a sua conta. Os dados locais não serão apagados. Continuar?`)) {
+                    return;
+                }
+
+                const clientes = clientesLocais.map((cliente) => ({
+                    ...normalizarCliente(cliente),
+                    id: crypto.randomUUID()
+                }));
+                const { error } = await supabaseClient
+                    .from('clientes')
+                    .insert(clientes.map(clienteParaBanco));
+                if (error) throw error;
+
+                localStorage.setItem(`rex_supabase_importado_${currentUser.id}`, 'true');
+                document.getElementById('btnImportLocal').disabled = true;
+                resetForm();
+                await renderClientes();
+                mostrarMensagem(storageStatusEl, `Importação concluída: ${clientes.length} cliente(s) copiados para a sua conta.`);
+            } catch (error) {
+                mostrarMensagem(storageStatusEl, `Não foi possível importar os dados locais: ${mensagemErro(error)}`, true);
+                console.error('Falha ao importar os clientes locais para o Supabase.', error);
+            }
+        }
+
+        async function adicionarExemplos() {
+            if (clientesCache.length) return;
+            document.getElementById('btnResetDemo').disabled = true;
+            try {
+                const { error } = await supabaseClient
+                    .from('clientes')
+                    .insert(padraoClientes.map(clienteParaBanco));
+                if (error) throw error;
+                mostrarMensagem(storageStatusEl, 'Exemplos adicionados.');
+                await renderClientes();
+            } catch (error) {
+                mostrarMensagem(storageStatusEl, `Não foi possível adicionar exemplos: ${mensagemErro(error)}`, true);
+                console.error('Falha ao adicionar clientes de exemplo.', error);
+                document.getElementById('btnResetDemo').disabled = false;
+            }
+        }
+
+        async function aplicarSessao(session) {
+            const usuario = session?.user || null;
+            const mudouUsuario = currentUser?.id !== usuario?.id;
+            currentUser = usuario;
+            authPanel.classList.toggle('hidden', Boolean(usuario));
+            appPanel.classList.toggle('hidden', !usuario);
+            accountEmailEl.textContent = usuario?.email || '';
+
+            if (!usuario) {
+                renderVersion += 1;
+                clientesCache = [];
+                tableBody.innerHTML = '';
+                return;
+            }
+
+            const jaImportado = localStorage.getItem(`rex_supabase_importado_${usuario.id}`) === 'true';
+            document.getElementById('btnImportLocal').disabled = jaImportado;
+            if (mudouUsuario) await renderClientes();
+        }
+
+        authForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!supabaseClient) return;
+
+            const botao = document.getElementById('signInButton');
+            botao.disabled = true;
+            mostrarMensagem(authStatusEl, 'Conectando...');
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: authEmailInput.value.trim(),
+                    password: authPasswordInput.value
+                });
+                if (error) throw error;
+                await aplicarSessao(data.session);
+                mostrarMensagem(authStatusEl, 'Login realizado com sucesso.');
+            } catch (error) {
+                mostrarMensagem(authStatusEl, `Não foi possível entrar: ${mensagemErro(error)}`, true);
+                console.error('Falha no login do Supabase.', error);
+            } finally {
+                botao.disabled = false;
+            }
+        });
+
+        document.getElementById('signUpButton').addEventListener('click', async () => {
+            if (!supabaseClient) return;
+            if (!authForm.reportValidity()) return;
+
+            const botao = document.getElementById('signUpButton');
+            botao.disabled = true;
+            mostrarMensagem(authStatusEl, 'Criando sua conta...');
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: authEmailInput.value.trim(),
+                    password: authPasswordInput.value,
+                    options: { emailRedirectTo: SITE_URL }
+                });
+                if (error) throw error;
+                if (data.session) {
+                    await aplicarSessao(data.session);
+                    mostrarMensagem(authStatusEl, 'Conta criada e login realizado.');
+                } else {
+                    mostrarMensagem(authStatusEl, 'Conta criada. Confirme o e-mail enviado pelo Supabase e depois entre.');
+                }
+            } catch (error) {
+                mostrarMensagem(authStatusEl, `Não foi possível criar a conta: ${mensagemErro(error)}`, true);
+                console.error('Falha ao criar usuário no Supabase.', error);
+            } finally {
+                botao.disabled = false;
+            }
+        });
+
+        document.getElementById('resendConfirmationButton').addEventListener('click', async () => {
+            if (!supabaseClient) return;
+            if (!authEmailInput.reportValidity()) return;
+
+            const botao = document.getElementById('resendConfirmationButton');
+            botao.disabled = true;
+            mostrarMensagem(authStatusEl, 'Enviando novo e-mail de confirmação...');
+            try {
+                const { error } = await supabaseClient.auth.resend({
+                    type: 'signup',
+                    email: authEmailInput.value.trim(),
+                    options: { emailRedirectTo: SITE_URL }
+                });
+                if (error) throw error;
+                mostrarMensagem(authStatusEl, 'Se a conta precisar de confirmação, enviaremos um novo link. Confira sua caixa de entrada e spam.');
+            } catch (error) {
+                mostrarMensagem(authStatusEl, `Não foi possível reenviar a confirmação: ${mensagemErro(error)}`, true);
+                console.error('Falha ao reenviar o e-mail de confirmação.', error);
+            } finally {
+                botao.disabled = false;
+            }
+        });
+
+        document.getElementById('signOutButton').addEventListener('click', async () => {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) throw error;
+                await aplicarSessao(null);
+                mostrarMensagem(authStatusEl, 'Você saiu da sua conta.');
+            } catch (error) {
+                mostrarMensagem(storageStatusEl, `Não foi possível sair da conta: ${mensagemErro(error)}`, true);
+                console.error('Falha ao encerrar a sessão do Supabase.', error);
+            }
+        });
+
+        document.getElementById('btnResetDemo').addEventListener('click', adicionarExemplos);
+        document.getElementById('btnImportLocal').addEventListener('click', importarDadosLocais);
+        document.getElementById('btnExportCsv').addEventListener('click', exportarCsv);
+        document.getElementById('btnBackup').addEventListener('click', exportarBackup);
+        document.getElementById('btnImportBackup').addEventListener('click', () => {
+            document.getElementById('backupFile').click();
+        });
+        document.getElementById('backupFile').addEventListener('change', (event) => {
+            const arquivo = event.target.files[0];
+            if (arquivo) void importarBackup(arquivo);
+            event.target.value = '';
+        });
+
+        resetForm();
+        if (!supabaseClient) {
+            mostrarMensagem(authStatusEl, 'Não foi possível carregar o cliente Supabase. Verifique sua conexão com a internet.', true);
+            document.getElementById('signInButton').disabled = true;
+            document.getElementById('signUpButton').disabled = true;
+        } else {
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                window.setTimeout(() => {
+                    void aplicarSessao(session).catch((error) => {
+                        mostrarMensagem(storageStatusEl, `Não foi possível abrir seus dados: ${mensagemErro(error)}`, true);
+                        console.error('Falha ao carregar a sessão do Supabase.', error);
+                    });
+                }, 0);
+            });
+
+            supabaseClient.auth.getSession()
+                .then(async ({ data, error }) => {
+                    if (error) throw error;
+                    await aplicarSessao(data.session);
+                })
+                .catch((error) => {
+                    mostrarMensagem(authStatusEl, `Não foi possível verificar sua sessão: ${mensagemErro(error)}`, true);
+                    console.error('Falha ao verificar sessão do Supabase.', error);
+                });
+        }
+    </script>
+</body>
+</html>
